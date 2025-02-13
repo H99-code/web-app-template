@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  $END$
+<v-card></v-card>
 </template>
 
 <style scoped>

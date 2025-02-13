@@ -2,7 +2,7 @@
   <v-container fill-height>
     <v-row class="d-flex justify-center" :style="{ marginTop: '10vh' }">
       <v-col xs="12" sm="8" md="6" lg="4" xl="3" class="d-flex justify-center">
-        <v-card class="gif-background" width="100%" color="red">
+        <v-card elevation="22" class="gif-background" width="100%" color="red">
           <v-col>
             <v-text-field
                 v-model="username"
