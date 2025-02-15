@@ -26,13 +26,16 @@
             Falscher Benutzername oder Passwort!
           </v-alert>
 
+          <v-alert v-if="isLocked" type="warning" class="mx-4">
+            Zu viele Fehlversuche! Warte 1 Minute.
+          </v-alert>
+
           <v-row>
-            <v-col></v-col>
             <v-col>
               <v-btn color="green" @click="goToRegister">Register</v-btn>
             </v-col>
             <v-col class="d-flex justify-end">
-              <v-btn :disabled="!username || !password" color="blue" @click="handleLogin">
+              <v-btn :disabled="!username || !password || isLocked" color="blue" @click="handleLogin">
                 Login
               </v-btn>
             </v-col>
@@ -56,13 +59,27 @@ export default {
       loginError: false,
       usernameRules: [
         v => !!v || 'Username is required',
-        v => (v && v.length >= 3) || 'Username must be longer than 3 characters'
+        v => (v && v.length >= 3) || 'Username must be länger als 3 Zeichen'
       ],
       passwordRules: [
         v => !!v || 'Password is required',
-        v => (v && v.length >= 3) || 'Password must be longer than 3 characters'
+        v => (v && v.length >= 3) || 'Password must be länger als 3 Zeichen'
       ]
     };
+  },
+  created() {
+
+    const lockData = localStorage.getItem('lockStatus');
+    if (lockData) {
+      const {timestamp, locked} = JSON.parse(lockData);
+      const elapsedTime = Date.now() - timestamp;
+      if (locked && elapsedTime < 60000) {
+        this.isLocked = true;
+        setTimeout(() => this.resetLock(), 60000 - elapsedTime);
+      } else {
+        localStorage.removeItem('lockStatus');
+      }
+    }
   },
   methods: {
     handleLogin() {
@@ -76,7 +93,17 @@ export default {
       if (user) {
         this.failedAttempts = 0;
         this.loginError = false;
-        this.$router.push('/home');
+        localStorage.removeItem('lockStatus');
+
+
+        localStorage.setItem('userId', user.id);
+
+
+        if (user.role === "admin") {
+          this.$router.push('/home');
+        } else {
+          this.$router.push('/home');
+        }
       } else {
         this.failedAttempts++;
         this.loginError = true;
@@ -85,25 +112,20 @@ export default {
           this.isLocked = true;
           alert('Zu viele Fehlversuche! Dein Konto ist für 1 Minute gesperrt.');
 
-          setTimeout(() => {
-            this.failedAttempts = 0;
-            this.isLocked = false;
-            this.loginError = false;
-          }, 60000);
+
+          localStorage.setItem('lockStatus', JSON.stringify({timestamp: Date.now(), locked: true}));
+
+          setTimeout(() => this.resetLock(), 60000);
         }
       }
-    },
-    goToRegister() {
-      this.$router.push('/register');
     }
   }
-};
+}
 </script>
 
 <style scoped>
 .gif-background {
   background-image: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTB0aGdqMmhvMTFyaHc0NzF0anNnYWQxbGl6a2UzNngyMDFkNWw4MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/p4sfWzAfXm04LkNFsf/giphy.gif');
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

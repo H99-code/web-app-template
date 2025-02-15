@@ -1,64 +1,47 @@
-<script >
-
-
-
+<script>
 export default {
   data() {
     return {
-      activeTab: 0,
-      openAddItemDialog: false,
-      newItem: {item: "", price: [5, 30], link: "", type: "", status: "New"},
-      selectedItems: [],
-      openWelcomeDialog: true,
-
-      drawer: true,
-
-      itemRules: [v => !!v || "Item Name is required"],
-      typeRules: [v => !!v || "Item Type is required"],
-      linkRules: [v => !!v || "Item Link is required"],
-      user1: [
-        {item: "Item 1", price: [10, 30], link: "https://example.com", type: "Type 1", status: "Active"}
+      drawer: true, // Steuerung für ein-/ausklappbare Sidebar
+      menuItems: [
+        { title: "Profile", icon: "mdi-account-circle", route: "/user" },
+        { title: "Todo", icon: "mdi-format-list-bulleted", route: "/todo" },
+        { title: "Links", icon: "mdi-link", route: "/links" },
+        { title: "Settings", icon: "mdi-cog", route: "/settings" },
       ],
-      user2: [
-        {item: "Item 2", price: [40, 60], link: "https://example.com", type: "Type 2", status: "Pending"}
-      ]
     };
   },
-  components: {
-
-  },
-  computed: {
-  },
   methods: {
-
-    goToLogin() {
-      this.$router.push("/")
+    navigate(route) {
+      this.$router.push(route);
     },
-    goToUser() {
-      this.$router.push("/user")
+    logout() {
+      this.$router.push("/");
     },
-    goToSettings() {
-      this.$router.push("/settings")
-
-    }
-  }
-}
-
+  },
+};
 </script>
 
 <template>
-  <v-navigation-drawer elevation="16" app>
-    <v-list>
-      <v-list-item @click="goToUser">
-        Profile
+  <v-navigation-drawer v-model="drawer" app class="rounded-lg" width="250">
+    <v-list density="compact">
+      <v-list-item
+          v-for="(item, index) in menuItems"
+          :key="index"
+          :prepend-icon="item.icon"
+          @click="navigate(item.route)"
+          variant="tonal"
+      >
+        <v-list-item-title>{{ item.title }}</v-list-item-title>
       </v-list-item>
-      <v-list-item @click="goToSettings">
-        Settings
-      </v-list-item>
-      <v-col>
-        <v-btn @click="goToLogin">Log out</v-btn>
-      </v-col>
     </v-list>
+
+    <v-divider class="my-3"></v-divider>
+
+    <v-col class="d-flex justify-center">
+      <v-btn color="yellow-darken-2" rounded="lg" @click="logout">
+        Log out
+      </v-btn>
+    </v-col>
   </v-navigation-drawer>
 </template>
-

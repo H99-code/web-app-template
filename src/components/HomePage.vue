@@ -13,8 +13,9 @@
         <v-col cols="8">
           <v-card class="elevation-13">
             <v-tabs v-model="activeTab">
-              <v-tab>Name 1</v-tab>
-              <v-tab>Name 2</v-tab>
+              <v-tab v-for="(user, index) in users" :key="index">
+                {{ user.personalInfo.firstName }}
+              </v-tab>
             </v-tabs>
             <v-table>
               <thead>
@@ -113,6 +114,7 @@ import TopBar from "@/components/TopBar.vue";
 
 import NavigationDrawer from "@/components/NavigationDrawer.vue";
 import WelcomeDialog from "@/components/WelcomeDialog.vue";
+import {users} from "@/data/userData"
 
 export default {
   data() {
@@ -121,6 +123,7 @@ export default {
       openAddItemDialog: false,
       newItem: {item: "", price: [5, 30], link: "", type: "", status: "New"},
       selectedItems: [],
+      users,
       openWelcomeDialog: true,
 
       drawer: true,
@@ -184,32 +187,12 @@ export default {
     },
     resetNewItem() {
       this.newItem = {item: "", price: [20, 40], link: "", type: "", status: "New"};
-    },
 
-    goToLogin() {
-      this.$router.push("/")
-    },
-    goToUser() {
-      this.$router.push("/user")
-    },
-    goToSettings() {
-      this.$router.push("/settings")
-    },
-    startChat() {
-      this.openWelcomeDialog = false;
-
-      this.$nextTick(() => {
-        if (this.$refs.chatComponent) {
-          this.$refs.chatComponent.addMessage("Willkommen im Chat!");
-        }
-      });
     }
   }
 }
 
 </script>
 <style scoped>
-.custom-dialog-overlay {
-  background-color: rgba(33, 33, 55, 0.5)
-}
+
 </style>
