@@ -1,12 +1,13 @@
 <script>
-import TopBar from "@/components/TopBar.vue";
+import PagesTopBar from "@/components/PagesTopBar.vue";
 
 export default {
-  components: {TopBar},
+  components: {PagesTopBar},
+
   data() {
 
     return {
-      components: TopBar,
+      components: PagesTopBar,
       selectedTheme: "darkmode",
       selectedLanguage: "englisch",
       themeSettings: ["Light Mode", "Dark Mode", "System"],
@@ -27,24 +28,26 @@ export default {
 </script>
 
 <template>
-  <TopBar/>
+  <PagesTopBar/>
   <v-container class="d-flex justify-center">
     <v-card width="400px" class="pa-4">
     <v-list>
-      <v-combobox
+      <v-select
           label="Change Theme"
           v-model="selectedTheme"
           :items="themeSettings"
           @update:modelValue="updateTheme"
-      ></v-combobox>
 
-      <v-combobox
+      ></v-select>
+
+      <v-select
 
           label="Change Language"
           v-model="selectedLanguage"
           :items="languageSettings"
           @update:modelValue="updateLanguage"
-      ></v-combobox>
+
+      ></v-select>
     </v-list>
   </v-card>
     </v-container>

@@ -82,6 +82,9 @@ export default {
     }
   },
   methods: {
+    goToRegister() {
+      this.$router.push("/register")
+    },
     handleLogin() {
       if (this.isLocked) {
         alert("Zu viele Versuche! Warte 1 Minute.");

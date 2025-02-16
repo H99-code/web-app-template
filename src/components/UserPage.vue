@@ -1,20 +1,24 @@
 <script>
-import TopBar from "@/components/TopBar.vue";
+import PagesTopBar from "@/components/PagesTopBar.vue";
 import { users } from "@/data/userData";
 
 export default {
-  components: { TopBar },
+  components: { PagesTopBar },
   data() {
     return {
-      user: {},
+      user: { personalInfo: { firstName: "", lastName: "", email: "" } },
       editMode: false,
     };
   },
   created() {
-
     const userId = localStorage.getItem('userId');
     if (userId) {
-      this.user = users.find(user => user.id === userId);
+      const foundUser = users.find(user => user.id === userId);
+      if (foundUser) {
+        this.user = foundUser;
+      } else {
+        this.$router.push('/login');
+      }
     } else {
       this.$router.push('/login');
     }
@@ -25,7 +29,6 @@ export default {
     },
     saveChanges() {
       this.editMode = false;
-
       console.log('Changes saved', this.user);
     },
   },
@@ -33,8 +36,9 @@ export default {
 </script>
 
 
+
 <template>
-  <TopBar />
+  <PagesTopBar />
 
   <v-container class="d-flex justify-center">
     <v-card width="400px" class="pa-4">

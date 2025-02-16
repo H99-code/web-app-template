@@ -6,6 +6,7 @@ export const users = [
         username: "admin",
         password: "admin123",
         role: "admin",
+        items: [],
         personalInfo: {
             firstName: "Admin",
             lastName: "User",
@@ -25,6 +26,7 @@ export const users = [
         username: "to-imp",
         password: "12345",
         role: "user",
+        items: [],
         personalInfo: {
             firstName: "Tom",
             lastName: "Holler",
@@ -57,4 +59,42 @@ export const users = [
             }
         }
     },
+    {
+        id: uuidv4(),  // Automatisch generierte UUID
+        username: "jane_doe",
+        password: "securepassword",
+        role: "user",
+        items: [],
+        personalInfo: {
+            firstName: "Jane",
+            lastName: "Doe",
+            email: "jane.doe@example.com",
+            birthdate: "1985-05-15",
+            address: {
+                street: "Sample Street 42",
+                city: "Cityville",
+                postalCode: "54321"
+            },
+            profilePicture: "https://example.com/path/to/jane-profile.jpg"
+        },
+        optionalInfo: {
+            phoneNumber: "+49 170 9876543",
+            gender: "female",
+            profileDescription: "Project manager with a focus on business development and strategy.",
+            language: "English"
+        },
+        socialMedia: {
+            linkedin: "https://www.linkedin.com/in/jane-doe",
+            twitter: "https://twitter.com/jane_doe"
+        },
+        userStatus: "active",
+        accessCredentials: {
+            apiKey: "def456ghi789",
+            otherSystems: {
+                crmSystem: "crm789xyz",
+                ticketSystem: "ticket123abc",
+                cloudStorage: "cloud456ghi"
+            }
+        }
+    }
 ];

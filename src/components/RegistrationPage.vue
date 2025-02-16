@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { users } from "@/data/userData";
+
 
 export default {
   name: "RegistrationPage",
@@ -75,40 +75,37 @@ export default {
     async register() {
       this.errorMessage = "";
 
-
       const isFormValid = await this.$refs.registerForm.validate();
-
       if (!isFormValid) {
         this.errorMessage = "Bitte alle Felder korrekt ausfüllen!";
         return;
       }
 
-      const userExists = users.some((u) => u.username === this.username);
-      const emailExists = users.some((u) => u.email === this.email);
+      try {
+        const response = await fetch("http://localhost:5001/register", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            username: this.username,
+            email: this.email,
+            password: this.password,
+          }),
+        });
 
-      if (userExists) {
-        this.errorMessage = "Der Benutzername ist bereits vergeben.";
-        return;
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Registrierung fehlgeschlagen");
+        }
+
+        alert("Registrierung erfolgreich!");
+        this.$router.push("/home");
+
+      } catch (error) {
+        this.errorMessage = error.message;
       }
-
-      if (emailExists) {
-        this.errorMessage = "Diese E-Mail-Adresse wird bereits verwendet.";
-        return;
-      }
-
-
-      users.push({ username: this.username, email: this.email, password: this.password });
-
-
-      this.username = "";
-      this.email = "";
-      this.password = "";
-
-      alert("Registrierung erfolgreich!");
-      this.$router.push("/home");
     },
   },
-};
+}
 </script>
 
 <style scoped>

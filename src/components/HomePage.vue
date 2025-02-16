@@ -2,10 +2,7 @@
   <div>
     <TopBar @toggle-drawer="drawer = !drawer" />
     <NavigationDrawer v-model="drawer"></NavigationDrawer>
-    <WelcomeDialog :dialog="openWelcomeDialog"></WelcomeDialog>
-
-
-
+    <!--<WelcomeDialog :dialog="openWelcomeDialog"></WelcomeDialog> -->
 
     <!-- Main Content -->
     <v-container>
@@ -13,7 +10,8 @@
         <v-col cols="8">
           <v-card class="elevation-13">
             <v-tabs v-model="activeTab">
-              <v-tab v-for="(user, index) in users" :key="index">
+              <!-- Dynamische Tabs für Benutzer -->
+              <v-tab v-for="user in users" :key="user.id">
                 {{ user.personalInfo.firstName }}
               </v-tab>
             </v-tabs>
@@ -59,17 +57,13 @@
                 BUY SELECTED
               </v-btn>
             </v-card-text>
-
           </v-card>
           <v-col cols="6"></v-col>
           <v-card class="pa-4">
             <ChatView ref="chatComponent" />
           </v-card>
         </v-col>
-
       </v-row>
-
-
     </v-container>
 
     <!-- Dialog: Add Item -->
@@ -103,96 +97,71 @@
       </v-card>
     </v-dialog>
   </div>
-
-
-
 </template>
 
 <script>
 import ChatView from "@/components/ChatView.vue";
 import TopBar from "@/components/TopBar.vue";
-
 import NavigationDrawer from "@/components/NavigationDrawer.vue";
-import WelcomeDialog from "@/components/WelcomeDialog.vue";
-import {users} from "@/data/userData"
+//import WelcomeDialog from "@/components/WelcomeDialog.vue";
+import { users } from "@/data/userData";
 
 export default {
   data() {
     return {
-      activeTab: 0,
+      activeTab: 0, // Der aktuelle Benutzer-Tab, basierend auf Index
       openAddItemDialog: false,
-      newItem: {item: "", price: [5, 30], link: "", type: "", status: "New"},
+      newItem: { item: "", price: [5, 30], link: "", type: "", status: "New" },
       selectedItems: [],
-      users,
+      users, // Hier sind alle Benutzer gespeichert
       openWelcomeDialog: true,
-
       drawer: true,
-
       itemRules: [v => !!v || "Item Name is required"],
       typeRules: [v => !!v || "Item Type is required"],
       linkRules: [v => !!v || "Item Link is required"],
-      user1: [
-        {item: "Item 1", price: [10, 30], link: "https://example.com", type: "Type 1", status: "Active"}
-      ],
-      user2: [
-        {item: "Item 2", price: [40, 60], link: "https://example.com", type: "Type 2", status: "Pending"}
-      ]
     };
   },
   components: {
-    WelcomeDialog,
+    //WelcomeDialog,
     NavigationDrawer,
     ChatView,
     TopBar,
   },
   computed: {
+    // Dynamische Filterung der Items basierend auf dem aktuellen Tab (Benutzer)
     filteredItems() {
-      return this.activeTab === 0 ? this.user1 : this.user2;
+      const currentUser = this.users[this.activeTab];
+      return currentUser.items || []; // Es wird das 'items' Feld des aktuellen Benutzers verwendet
     }
   },
   methods: {
+    // Methode zum Hinzufügen eines neuen Items
     addItem() {
-      if (this.activeTab === 0) {
-        this.user1.push({...this.newItem});
-      } else {
-        this.user2.push({...this.newItem});
-      }
+      const currentUser = this.users[this.activeTab];
+      currentUser.items.push({ ...this.newItem }); // Item wird dem aktuellen Benutzer zugewiesen
       this.resetNewItem();
       this.openAddItemDialog = false;
     },
+    // Methode zum Löschen der ausgewählten Items
     deleteSelectedItems() {
-      if (this.activeTab === 0) {
-        this.user1 = this.user1.filter((_, index) => !this.selectedItems.includes(index));
-      } else {
-        this.user2 = this.user2.filter((_, index) => !this.selectedItems.includes(index));
-      }
+      const currentUser = this.users[this.activeTab];
+      currentUser.items = currentUser.items.filter((_, index) => !this.selectedItems.includes(index));
       this.selectedItems = [];
     },
+    // Methode zum Markieren der ausgewählten Items als 'Bought'
     buySelectedItems() {
-      if (this.activeTab === 0) {
-        this.user1.forEach((item, index) => {
-          if (this.selectedItems.includes(index)) {
-            item.status = "Bought";
-
-          }
-        });
-      } else {
-        this.user2.forEach((item, index) => {
-          if (this.selectedItems.includes(index)) {
-            item.status = "Bought";
-          }
-        });
-      }
+      const currentUser = this.users[this.activeTab];
+      currentUser.items.forEach((item, index) => {
+        if (this.selectedItems.includes(index)) {
+          item.status = "Bought"; // Status ändern, wenn das Item ausgewählt wurde
+        }
+      });
       this.selectedItems = [];
     },
+    // Rücksetzen des Formulars für ein neues Item
     resetNewItem() {
-      this.newItem = {item: "", price: [20, 40], link: "", type: "", status: "New"};
-
+      this.newItem = { item: "", price: [], link: "", type: "", status: "" };
     }
   }
 }
-
 </script>
-<style scoped>
-
-</style>
